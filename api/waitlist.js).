@@ -1,0 +1,80 @@
+// /api/waitlist.js - function serverless para Vercel (Node 18+)
+// Cole em: Add file -> Create new file -> name: api/waitlist.js
+const RATE_LIMIT_MAP = new Map();
+const RATE_WINDOW = 60 * 1000; // 1 minuto
+const MAX_PER_WINDOW = 10;
+
+function isValidEmail(email) {
+  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+export default async function handler(req, res) {
+  if (req.method !== 'POST') {
+    res.setHeader('Allow', 'POST');
+    return res.status(405).json({ message: 'Method Not Allowed' });
+  }
+
+  const ip = req.headers['x-forwarded-for'] || req.socket?.remoteAddress || 'unknown';
+  const now = Date.now();
+  const entry = RATE_LIMIT_MAP.get(ip) || { count: 0, ts: now };
+
+  if (now - entry.ts < RATE_WINDOW) {
+    entry.count += 1;
+  } else {
+    entry.count = 1;
+    entry.ts = now;
+  }
+  RATE_LIMIT_MAP.set(ip, entry);
+
+  if (entry.count > MAX_PER_WINDOW) {
+    return res.status(429).json({ message: 'Muitas requisições. Tente novamente mais tarde.' });
+  }
+
+  let body = req.body;
+  // Em Vercel, req.body já vem parseado em JSON quando Content-Type é application/json.
+  if (typeof body === 'string') {
+    try { body = JSON.parse(body); } catch (e) { return res.status(400).json({ message: 'Payload inválido' }); }
+  }
+
+  const email = (body?.email || '').trim().toLowerCase();
+  if (!email || !isValidEmail(email)) return res.status(400).json({ message: 'E‑mail inválido' });
+
+  // Optional: reCAPTCHA v3/Turnstile validation (se configurar RECAPTCHA_SECRET)
+  const RECAPTCHA_SECRET = process.env.RECAPTCHA_SECRET;
+  if (RECAPTCHA_SECRET && body?.recaptchaToken) {
+    try {
+      const rcRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+        body: `secret=${encodeURIComponent(RECAPTCHA_SECRET)}&response=${encodeURIComponent(body.recaptchaToken)}`
+      });
+      const rcJson = await rcRes.json();
+      if (!rcJson.success || (rcJson.score && rcJson.score < 0.3)) {
+        return res.status(400).json({ message: 'Falha na verificação anti-bot' });
+      }
+    } catch (err) {
+      console.error('recaptcha verify error', err);
+      return res.status(500).json({ message: 'Erro de verificação anti-bot' });
+    }
+  }
+
+  // Se WAITLIST_WEBHOOK estiver configurado, encaminha dados
+  const WAITLIST_WEBHOOK = process.env.WAITLIST_WEBHOOK;
+  if (WAITLIST_WEBHOOK) {
+    try {
+      await fetch(WAITLIST_WEBHOOK, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, ip, timestamp: new Date().toISOString() })
+      });
+      return res.status(200).json({ message: 'Obrigado — você entrou na fila.' });
+    } catch (err) {
+      console.error('webhook error', err);
+      // continuar para fallback
+    }
+  }
+
+  // Fallback simples: log no servidor (aqui Vercel) e responde sucesso
+  console.log('Waitlist entry (no integration):', { email, ip, ts: new Date().toISOString() });
+  return res.status(200).json({ message: 'Obrigado — você entrou na fila (modo local).' });
+}
