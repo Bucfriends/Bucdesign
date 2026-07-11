@@ -124,8 +124,9 @@
       grid-template-columns:1fr 1fr;
       gap:80px;
       align-items:center;
-      padding:120px 32px 120px;
+      padding:120px 32px;
       border-bottom:1px solid var(--line);
+      background:linear-gradient(135deg, rgba(232,116,91,0.06) 0%, rgba(107,124,139,0.03) 100%);
     }
     .hero-content h1{
       font-family:var(--f-bold);
@@ -151,11 +152,11 @@
       font-weight:700;
     }
     .hero-description{
-      font-size:16px;
+      font-size:17px;
       color:var(--text-secondary);
-      line-height:1.8;
+      line-height:1.9;
       max-width:520px;
-      margin-bottom:40px;
+      margin-bottom:48px;
     }
     .hero-cta{
       display:flex;
@@ -181,7 +182,7 @@
     .btn-primary:hover{
       background:#f09a84;
       transform:translateY(-2px);
-      box-shadow:0 12px 32px rgba(232,116,91,0.25);
+      box-shadow:0 12px 40px rgba(232,116,91,0.3);
     }
     .btn-secondary{
       border:2px solid var(--accent-slate);
@@ -201,6 +202,7 @@
     .btn-secondary:hover{
       border-color:var(--accent-coral);
       color:var(--accent-coral);
+      background:rgba(232,116,91,0.08);
     }
     .hero-visual{
       height:100%;
@@ -213,7 +215,24 @@
       font-family:var(--f-mono);
       font-size:13px;
       color:var(--text-tertiary);
-      min-height:500px;
+      min-height:520px;
+      position:relative;
+      overflow:hidden;
+    }
+    .hero-visual::before{
+      content:'';
+      position:absolute;
+      width:200px;
+      height:200px;
+      background:radial-gradient(circle, rgba(232,116,91,0.3) 0%, transparent 70%);
+      border-radius:50%;
+      top:20%;
+      right:-50px;
+      animation:float 6s ease-in-out infinite;
+    }
+    @keyframes float{
+      0%, 100%{transform:translateY(0px);}
+      50%{transform:translateY(-20px);}
     }
     
     /* Grid Panel */
@@ -307,7 +326,7 @@
     /* Form */
     .form-container{
       display:flex;
-      max-width:620px;
+      max-width:640px;
       margin:0 auto;
       border:2px solid var(--line);
       background:var(--bg-primary);
@@ -451,10 +470,10 @@
     
     /* Footer */
     .site-footer{
-      padding:60px 32px;
+      padding:80px 32px;
       display:grid;
       grid-template-columns:repeat(3,1fr);
-      gap:40px;
+      gap:60px;
       font-family:var(--f-mono);
       font-size:11px;
       color:var(--text-tertiary);
@@ -464,14 +483,14 @@
     .footer-col{
       display:flex;
       flex-direction:column;
-      gap:12px;
+      gap:16px;
     }
     .footer-title{
       color:var(--text-primary);
       font-weight:700;
       letter-spacing:0.1em;
       text-transform:uppercase;
-      margin-bottom:8px;
+      margin-bottom:12px;
     }
     .footer-link{
       color:var(--text-tertiary);
@@ -505,18 +524,21 @@
       .nav-links{gap:32px;}
       .site-footer{
         grid-template-columns:1fr;
-        gap:24px;
+        gap:40px;
       }
     }
     @media (max-width:768px){
       .container{padding:0 24px;}
       .nav{padding:20px 24px;}
       .hero-visual{display:none;}
-      .hero{padding:60px 24px;}
+      .hero{
+        grid-template-columns:1fr;
+        padding:60px 24px;
+      }
       .panel-cell{padding:60px 24px;}
       .capture-section{padding:80px 24px;}
       .cards-section{padding:80px 24px;}
-      .site-footer{padding:40px 24px;}
+      .site-footer{padding:60px 24px;}
     }
   </style>
 </head>
@@ -538,14 +560,14 @@
       <div class="hero-content">
         <div class="hero-label">Estudo Cromático</div>
         <h1>O invisível que<br><span>sustenta o que aparece.</span></h1>
-        <p class="hero-description">"BUC" nasceu da distância. Não do desejo. Da impossibilidade. Cresci vendo design existir como privilégio. Hoje, design é para todos.</p>
+        <p class="hero-description">"BUC" nasceu da distância. Não do desejo. Da impossibilidade. Cresci vendo design existir como privilégio. Hoje, design é para todos. Material, intenção, acesso.</p>
         <div class="hero-cta">
           <a href="#drops" class="btn-primary">Entrar na Fila</a>
           <a href="/marca" class="btn-secondary">Conhecer "BUC"</a>
         </div>
       </div>
       <div class="hero-visual">
-        <span>Estudos visuais em desenvolvimento</span>
+        <span>Estudos visuais</span>
       </div>
     </section>
 
@@ -587,7 +609,7 @@
         <article class="card">
           <div class="card-number">01</div>
           <h4 class="card-title">Caixa Têxtil</h4>
-          <p class="card-body">Materialidade e corte. Pequenas séries experimentais. Estudos sobre fibra, cor e estrutura que definem a identidade visual.</p>
+          <p class="card-body">Materialidade e corte. Pequenas séries experimentais. Estudos sobre fibra, cor e estrutura que definem a identidade visual "BUC".</p>
           <div class="card-actions">
             <a href="/estudo/caixa-01" class="btn-ghost">Ver Estudo</a>
           </div>
@@ -595,7 +617,7 @@
         <article class="card">
           <div class="card-number">02</div>
           <h4 class="card-title">Soluções Identity</h4>
-          <p class="card-body">Design de identidade e aplicações têxteis. Como o material comunica marca. Propostas que transformam percepção.</p>
+          <p class="card-body">Design de identidade e aplicações têxteis. Como o material comunica marca. Propostas que transformam percepção e experiência.</p>
           <div class="card-actions">
             <a href="/estudo/caixa-02" class="btn-ghost">Ver Estudo</a>
           </div>
@@ -603,7 +625,7 @@
         <article class="card">
           <div class="card-number">03</div>
           <h4 class="card-title">Cromática Lab</h4>
-          <p class="card-body">Experimentação cromática profunda. Cores que estruturam a narrativa visual. Paletas que falam e comunicam.</p>
+          <p class="card-body">Experimentação cromática profunda. Cores que estruturam a narrativa visual. Paletas que falam e comunicam intenção clara.</p>
           <div class="card-actions">
             <a href="/estudo/caixa-03" class="btn-ghost">Ver Estudo</a>
           </div>
@@ -611,7 +633,7 @@
         <article class="card">
           <div class="card-number">04</div>
           <h4 class="card-title">Série Limitada</h4>
-          <p class="card-body">Coleção exclusiva e pensada. Peças que dialogam entre si como uma conversa. Edições raras de design.</p>
+          <p class="card-body">Coleção exclusiva e pensada. Peças que dialogam entre si como uma conversa. Edições raras que valorizam qualidade e processo.</p>
           <div class="card-actions">
             <a href="/estudo/caixa-04" class="btn-ghost">Ver Estudo</a>
           </div>
@@ -624,8 +646,8 @@
     <div class="footer-col">
       <div class="footer-title">Empresa</div>
       <a href="/marca" class="footer-link">Sobre "BUC"</a>
-      <a href="/processo" class="footer-link">Processo</a>
-      <a href="/manifesto" class="footer-link">Manifesto</a>
+      <a href="/" class="footer-link">Home</a>
+      <a href="#" class="footer-link">Manifesto</a>
     </div>
     <div class="footer-col">
       <div class="footer-title">Comunidade</div>
@@ -635,7 +657,7 @@
     </div>
     <div class="footer-col">
       <div class="footer-title">Info</div>
-      <p style="line-height:1.8;">© 2026 "BUC"<br>CASA DE CRIAÇÃO<br>GOIÂNIA, BRASIL</p>
+      <p style="line-height:1.9;">© 2026 "BUC"<br>CASA DE CRIAÇÃO<br>GOIÂNIA, BRASIL</p>
     </div>
   </footer>
 
